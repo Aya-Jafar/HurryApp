@@ -7,13 +7,22 @@ body {
 .cover {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-around;
   /* padding: 0 5%; */
   /* background-color: #090923; */
   /* border-radius: 20px; */
-  height: 70vh;
+  height: 75vh;
   /* width: 80%; */
 }
+
+@media only screen and (max-width: 600px) {
+  .cover {
+    height: 85vh;
+    margin-bottom: 50vh;
+  }
+}
+
 
 .cover img {
   height: 60vh;
@@ -89,8 +98,8 @@ body {
   color: white;
   overflow: hidden;
 }
-.card:hover{
-  border:0.7px #01E8FE solid;
+.card:hover {
+  border: 0.7px #01e8fe solid;
   overflow: hidden;
   /* box-shadow: 5px 9px 100px -1px #1f41bb; */
 }
@@ -160,7 +169,7 @@ p {
   /* background: linear-gradient(45deg, #9026cd, #6621b6, #561fad); */
   background-clip: padding-box;
 }
-.comment-input{
+.comment-input {
   display: flex;
 }
 
