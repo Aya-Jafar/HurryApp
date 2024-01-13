@@ -160,6 +160,9 @@ p {
   /* background: linear-gradient(45deg, #9026cd, #6621b6, #561fad); */
   background-clip: padding-box;
 }
+.comment-input{
+  display: flex;
+}
 
 .stream-page {
   display: flex;
@@ -179,12 +182,14 @@ p {
   justify-content: space-between;
   gap: 20px; */
 }
+
 .chat-element {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
 }
+
 .chat-element img {
   height: 50px;
   border-radius: 50%;
