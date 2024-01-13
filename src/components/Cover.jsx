@@ -2,43 +2,24 @@ import React from "react";
 import { Slide } from "react-slideshow-image";
 import cover from "../images/c.png";
 
+const handleMouseMove = (e, id) => {
+  const { clientX, clientY } = e;
+  const card = document.getElementById(id);
+  const { left, top, width, height } = card.getBoundingClientRect();
+  const mouseX = clientX - left;
+  const mouseY = clientY - top;
+  const rotationX = 5 - (10 * mouseY) / height;
+  const rotationY = (10 * mouseX) / width - 5;
+  card.style.transform = `perspective(1000px) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+};
+
+const handleMouseLeave = (e, id) => {
+  const card = document.getElementById(id);
+  card.style.transform = "perspective(1000px) rotateX(0) rotateY(0)";
+};
+
 function Cover({ videos }) {
-  const divStyle = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundSize: "cover",
-    height: "500px",
-    // backgroundColor: "red",
-  };
-
-  const cardsContainerStyle = {
-    display: "flex",
-    flexDirection: "column",
-    height: "800%",
-    // backgroundColor: "red",
-
-    // maxHeight: "400px", // Set a maximum height for vertical scrolling
-    overflowY: "auto",
-    padding: "16px", // Add padding for better aesthetics
-    // marginBottom: "120%",
-  };
   return (
-    // <Slide style={{ ...cardsContainerStyle }}>
-    //   {videos.map((slideItem, index) => (
-    //     <div key={index}>
-    //       <div className="slide">
-    //         <iframe
-    //           width="100%"
-    //           height="500"
-    //           src={slideItem.url}
-    //           title={`YouTube Video ${index}`}
-    //           frameBorder="0"
-    //         ></iframe>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </Slide>
     <div className="cover">
       <div className="cover-text">
         <h1>Elevate Your Gaming</h1>
@@ -49,7 +30,16 @@ function Cover({ videos }) {
           Start browsing
         </button>
       </div>
-      <img src={cover} alt="" />
+      <div
+        onMouseMove={(e) => {
+          handleMouseMove(e, "cover");
+        }}
+        onMouseLeave={(e) => {
+          handleMouseLeave(e, "cover");
+        }}
+      >
+        <img src={cover} alt="" id="cover" />
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../store/useAuth";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignupModal";
-import logo from '../images/Remove.png'
+import logo from "../images/Remove.png";
 // TODO: Remove comments
 
 // const Transition = React.forwardRef(function Transition(props, ref) {
@@ -11,7 +11,8 @@ import logo from '../images/Remove.png'
 // });
 
 function Header() {
-  const { setIsLoginModalOpen, setIsSignUpModalOpen } = useAuth();
+  const { setIsLoginModalOpen, setIsSignUpModalOpen, isLoggedIn } = useAuth();
+
 
   return (
     <div className="header">
@@ -19,19 +20,23 @@ function Header() {
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
           <div className="logo">
             <img src={logo} alt="" />
-            <h2>GameHub</h2> 
+            <h2>GameHub</h2>
           </div>
         </Link>
       </div>
 
-      <div className="auth-btns">
-        <button id="login" className="btns" onClick={setIsLoginModalOpen}>
-          Log In
-        </button>
-        <button onClick={setIsSignUpModalOpen} className="btns">
-          Sign Up
-        </button>
-      </div>
+      {isLoggedIn ? (
+        <div></div>
+      ) : (
+        <div className="auth-btns">
+          <button id="login" className="btns" onClick={setIsLoginModalOpen}>
+            Log In
+          </button>
+          <button onClick={setIsSignUpModalOpen} className="btns">
+            Sign Up
+          </button>
+        </div>
+      )}
 
       <LoginModal />
       <SignUpModal />

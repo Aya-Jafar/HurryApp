@@ -4,13 +4,11 @@ import { Box, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router-dom";
+import { signup } from "../services/api";
+
 
 function SignUpModal() {
-  const { isSignUpModalOpen, setIsSignUpModalOpen, isLoggedIn, setIsLoggedIn } =
-    useAuth();
-
-  const navigate = useNavigate();
+  const { isSignUpModalOpen, setIsSignUpModalOpen } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -27,8 +25,6 @@ function SignUpModal() {
     });
   };
 
-  // console.log(formData);
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -43,30 +39,7 @@ function SignUpModal() {
   };
 
   const handleSubmit = () => {
-    fetch(`http://127.0.0.1:8000//api/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.token.access) {
-          localStorage.setItem("token", data.token.access);
-          setIsLoggedIn(true);
-          setIsSignUpModalOpen(false);
-        }
-        console.log("Signup successful", data);
-      })
-      .catch((error) => {
-        console.error("Error signing up:", error.message);
-      });
+    signup(formData);
   };
 
   return (

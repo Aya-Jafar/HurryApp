@@ -4,6 +4,7 @@ import { Box, Button } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
+import { login } from "../services/api";
 
 function LoginModal() {
   const { isLoginModalOpen, setIsLoginModalOpen, setIsLoggedIn } = useAuth();
@@ -36,31 +37,7 @@ function LoginModal() {
 
   const handleSubmit = () => {
     console.log(process.env.REACT_APP_API_BASE_URL);
-
-    fetch(`http://127.0.0.1:8000/api/auth/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.token.access) {
-          localStorage.setItem("token", data.token.access);
-          setIsLoggedIn(true);
-          setIsLoginModalOpen(false);
-        }
-        console.log("successful", data);
-      })
-      .catch((error) => {
-        console.error("Error signing up:", error.message);
-      });
+    login(formData);
   };
 
   return (
