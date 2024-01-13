@@ -14,7 +14,7 @@ function Home() {
       <Cover videos={videos} />
 
       <h2 className="cards-catogary-title">
-        Live streams we think you'll like
+        <strong style={{color:"#01E8FE"}}>Live</strong> streams we think you'll like
       </h2>
 
       <Cards videos={videos} />
