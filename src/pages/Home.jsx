@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React from "react";
 import "react-slideshow-image/dist/styles.css";
 import Cards from "../components/Cards";
 import Cover from "../components/Cover";
@@ -6,7 +6,6 @@ import { getVideosInfo } from "../services/api";
 
 function Home() {
   const videos = getVideosInfo();
-
 
 
   return (

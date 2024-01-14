@@ -4,10 +4,7 @@ import { TextField } from "@mui/material";
 
 function Chat() {
   const [chatStream, setChatStream] = useState([
-    {
-      userId: 1,
-      value: "awesome",
-    },
+    { userId: 1, value: "awesome" },
     { userId: 2, value: "awesome" },
     { userId: 3, value: "awesome" },
   ]);
@@ -17,7 +14,7 @@ function Chat() {
 
   useEffect(() => {
     // Create a WebSocket connection only once
-    socketRef.current = new WebSocket("ws://localhost:3000");
+    socketRef.current = new WebSocket("ws://localhost:8000");
 
     // Set up event listener for messages
     socketRef.current.addEventListener("message", (event) => {

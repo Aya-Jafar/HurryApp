@@ -176,7 +176,7 @@ p {
 .stream-page {
   display: flex;
   flex-wrap: wrap;
-  background-color: #282828;
+  /* background-color: #282828; */
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
   /* width: 100%; */

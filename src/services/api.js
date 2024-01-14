@@ -58,7 +58,6 @@ export const signup = (formData) => {
     .catch((error) => {
       console.error("Error signing up:", error.message);
     });
-    
 };
 
 export const getVideosInfo = () => {
@@ -72,19 +71,19 @@ export const getVideosInfo = () => {
     {
       id: 2,
       title: "Title 2",
-      url: "https://www.youtube.com/embed/CAt2-HEIpCI?si=hQ_sdxu0vgFXlWLU",
+      url: "https://www.youtube.com/embed/wZreAuJwMZ8?si=Ve3EYEk3i6N8hSbV",
       userName: "user 2",
     },
     {
       id: 3,
       title: "Title 3",
-      url: "https://www.youtube.com/embed/CAt2-HEIpCI?si=hQ_sdxu0vgFXlWLU",
+      url: "https://www.youtube.com/embed/JY2McN-MZFc?si=vuGDN_mMxd5yEImT",
       userName: "user 3",
     },
     {
       id: 4,
       title: "Title 4",
-      url: "https://www.youtube.com/embed/CAt2-HEIpCI?si=hQ_sdxu0vgFXlWLU",
+      url: "https://www.youtube.com/embed/nD6qsOPTaKQ?si=95TMVUOxzMlf4FmX",
       userName: "user 4",
     },
   ];
