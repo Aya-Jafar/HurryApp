@@ -5,21 +5,29 @@ import "video-react/dist/video-react.css";
 import thumnail from "../images/thumb.png";
 
 function RecordedVideo() {
-  const [video, setVideo] = useState(null);
   const playerRef = useRef(null);
   const [isPaused, setIsPaused] = useState(true);
+  const [startTime, setStartTime] = useState(0);
 
   const socketRef = useRef(null);
 
-
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:4000");
+    socketRef.current = new WebSocket(process.env.REACT_APP_WS_URL);
 
     // Add event listeners for play and pause events
     playerRef.current.subscribeToStateChange((state, prevState) => {
-      if (state.paused !== prevState.paused) {
+      if (
+        state.paused !== prevState.paused ||
+        state.currentTime !== prevState.currentTime
+      ) {
         if (socketRef.current.readyState === WebSocket.OPEN) {
-          socketRef.current.send(JSON.stringify({ paused: state.paused }));
+          console.log(state.currentTime);
+          socketRef.current.send(
+            JSON.stringify({
+              paused: state.paused,
+              startTime: state.currentTime,
+            })
+          );
         }
       }
     });
@@ -38,6 +46,11 @@ function RecordedVideo() {
           playerRef.current.play();
         }
       }
+
+      if (data.hasOwnProperty("startTime")) {
+        playerRef.current.seek(data.startTime);
+        setStartTime(data.startTime);
+      }
     });
 
     // Clean up the WebSocket connection on component unmount
@@ -46,7 +59,7 @@ function RecordedVideo() {
     };
   }, [playerRef, isPaused]);
 
-  console.log(playerRef?.current?.getState());
+  // console.log(playerRef?.current?.getState());
 
   return (
     <div className="stream-page">
@@ -55,14 +68,12 @@ function RecordedVideo() {
           src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
           ref={playerRef}
           poster={thumnail}
-          autoplay
+          startTime={startTime}
+          autoplay={true}
           controls
         >
           <BigPlayButton position="center" />
         </Player>
-        {/* <div>
-          <p>Status: {isPaused ? "Paused" : "Playing"}</p>
-        </div> */}
       </div>
       <Chat />
     </div>

@@ -1,11 +1,9 @@
-import { validateEmail } from "../helpers";
 import useAuth from "../store/useAuth";
 
 export const login = (formData) => {
-  //   const { email , password } = formData;
   const { setIsLoggedIn, setIsLoginModalOpen } = useAuth.getState();
 
-  fetch(`http://127.0.0.1:8000/api/auth/signin`, {
+  fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/signin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -34,7 +32,7 @@ export const login = (formData) => {
 export const signup = (formData) => {
   const { setIsLoggedIn, setIsSignUpModalOpen } = useAuth.getState();
 
-  fetch(`http://127.0.0.1:8000//api/auth/signup`, {
+  fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
