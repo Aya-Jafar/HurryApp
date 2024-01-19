@@ -4,14 +4,11 @@ import useAuth from "../store/useAuth";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignupModal";
 import logo from "../images/Remove.png";
-// TODO: Remove comments
 
-// const Transition = React.forwardRef(function Transition(props, ref) {
-//   return <Slide direction="up" ref={ref} {...props} />;
-// });
 
 function Header() {
-  const { setIsLoginModalOpen, setIsSignUpModalOpen, isLoggedIn } = useAuth();
+  const { setIsLoginModalOpen, setIsSignUpModalOpen } =
+    useAuth();
 
 
   return (
@@ -25,8 +22,8 @@ function Header() {
         </Link>
       </div>
 
-      {isLoggedIn ? (
-        <div></div>
+      {localStorage.getItem("userName") ? (
+        <h3>{localStorage.getItem("userName")}</h3>
       ) : (
         <div className="auth-btns">
           <button id="login" className="btns" onClick={setIsLoginModalOpen}>
