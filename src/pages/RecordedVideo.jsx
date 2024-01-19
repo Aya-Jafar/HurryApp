@@ -1,74 +1,92 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import Chat from "../components/Chat";
 import { Player, BigPlayButton } from "video-react";
 import "video-react/dist/video-react.css";
 import thumnail from "../images/thumb.png";
+import testVideo from "./test.mp4";
+import debounce from "lodash/debounce";
 
 function RecordedVideo() {
   const playerRef = useRef(null);
-  const [isPaused, setIsPaused] = useState(true);
-  const [startTime, setStartTime] = useState(0);
+  const pauseSocketRef = useRef(null);
+  const timeSocketRef = useRef(null);
 
-  const socketRef = useRef(null);
+  const sendPauseMessage = debounce(
+    (paused) => {
+      if (pauseSocketRef.current.readyState === WebSocket.OPEN) {
+        pauseSocketRef.current.send(
+          JSON.stringify({
+            paused: paused,
+          })
+        );
+      }
+    },
+    0,
+    { leading: true, trailing: false, maxWait: 1000 }
+  );
+
+  const sendTimeMessage = debounce(
+    (currentTime) => {
+      if (timeSocketRef.current.readyState === WebSocket.OPEN) {
+        timeSocketRef.current.send(
+          JSON.stringify({
+            startTime: currentTime,
+          })
+        );
+      }
+    },
+    600,
+    { leading: true, trailing: false, maxWait: 1000 }
+  );
 
   useEffect(() => {
-    socketRef.current = new WebSocket(process.env.REACT_APP_WS_URL);
+    pauseSocketRef.current = new WebSocket("ws://localhost:20000");
+    timeSocketRef.current = new WebSocket("ws://localhost:30000");
 
     // Add event listeners for play and pause events
     playerRef.current.subscribeToStateChange((state, prevState) => {
-      if (
-        state.paused !== prevState.paused ||
-        state.currentTime !== prevState.currentTime
-      ) {
-        if (socketRef.current.readyState === WebSocket.OPEN) {
-          console.log(state.currentTime);
-          socketRef.current.send(
-            JSON.stringify({
-              paused: state.paused,
-              startTime: state.currentTime,
-            })
-          );
-        }
+      if (state.paused !== prevState.paused) {
+        sendPauseMessage(state.paused);
+      }
+      if (state.currentTime !== prevState.currentTime) {
+        sendTimeMessage(state.currentTime);
       }
     });
 
-    // Set up event listener for receiving the initial "paused" state
-    socketRef.current.addEventListener("message", (event) => {
+    // Clean up the WebSocket connection on component unmount
+    return () => {
+      pauseSocketRef.current.close();
+      timeSocketRef.current.close();
+    };
+  }, [playerRef]);
+
+  useEffect(() => {
+    pauseSocketRef.current.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
       if (data.hasOwnProperty("paused")) {
-        // console.log(data);
-        setIsPaused(data.paused);
-
-        // Pause or play the video based on the received state
         if (data.paused) {
           playerRef.current.pause();
         } else {
           playerRef.current.play();
         }
       }
-
-      if (data.hasOwnProperty("startTime")) {
-        playerRef.current.seek(data.startTime);
-        setStartTime(data.startTime);
-      }
     });
 
-    // Clean up the WebSocket connection on component unmount
-    return () => {
-      socketRef.current.close();
-    };
-  }, [playerRef, isPaused]);
-
-  // console.log(playerRef?.current?.getState());
+    timeSocketRef.current.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+      if (data.hasOwnProperty("startTime")) {
+        playerRef.current.seek(data.startTime);
+      }
+    });
+  }, []);
 
   return (
     <div className="stream-page">
       <div className="stream" style={{ width: "70%" }}>
         <Player
-          src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+          src={testVideo}
           ref={playerRef}
           poster={thumnail}
-          startTime={startTime}
           autoplay={true}
           controls
         >

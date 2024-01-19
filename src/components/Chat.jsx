@@ -14,7 +14,7 @@ function Chat() {
 
   useEffect(() => {
     // Create a WebSocket connection only once
-    socketRef.current = new WebSocket("ws://localhost:8000");
+    socketRef.current = new WebSocket("ws://localhost:3000");
 
     // Set up event listener for messages
     socketRef.current.addEventListener("message", (event) => {
