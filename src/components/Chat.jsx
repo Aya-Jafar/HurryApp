@@ -18,7 +18,6 @@ function Chat() {
 
     // Set up event listener for messages
     socketRef.current.addEventListener("message", (event) => {
-      console.log("Received message:", event.data);
 
       const receivedMessage = event.data;
       setChatStream((prevChatStream) => [
