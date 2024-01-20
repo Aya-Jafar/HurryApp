@@ -4,12 +4,12 @@ const useAuth = create((set) => ({
   isLoginModalOpen: false,
   isSignUpModalOpen: false,
   isLoggedIn: false,
-  // isSignup: false,
+  email: null,
 
   setIsLoginModalOpen: (isLoginModalOpen) => set({ isLoginModalOpen }),
   setIsSignUpModalOpen: (isSignUpModalOpen) => set({ isSignUpModalOpen }),
   setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
-  // setIsSignUp: (isSignup) => set({ isSignup }),
+  setEmail: (email) => set({ email }),
 }));
 
 export default useAuth;
