@@ -5,6 +5,7 @@ import "video-react/dist/video-react.css";
 import debounce from "lodash/debounce";
 import { useParams } from "react-router-dom";
 import { getVideoById } from "../services/api";
+import UserInfo from "../components/UserInfo";
 
 function RecordedVideo() {
   const { id } = useParams();
@@ -79,6 +80,8 @@ function RecordedVideo() {
     };
   }, [playerRef]);
 
+  console.log(currentVideo);
+
   return (
     <div className="stream-page">
       <div className="stream" style={{ width: "70%" }}>
@@ -89,6 +92,7 @@ function RecordedVideo() {
         >
           <BigPlayButton position="center" />
         </Player>
+        <UserInfo currentVideo={currentVideo} />
       </div>
       <Chat />
     </div>

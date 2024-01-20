@@ -207,3 +207,13 @@ p {
 .chat-element div h4 {
   margin: 0;
 }
+.user-info-in-video-page{
+  display: flex;
+  align-items: center;
+  gap:2%;
+  margin-top: 2%;
+}
+.user-info-in-video-page img{
+  width: 50px;
+  border-radius: 50%;
+}
