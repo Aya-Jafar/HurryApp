@@ -1,67 +1,58 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Chat from "../components/Chat";
 import { Player, BigPlayButton } from "video-react";
 import "video-react/dist/video-react.css";
-import thumnail from "../images/thumb.png";
-import testVideo from "./test.mp4";
 import debounce from "lodash/debounce";
+import { useParams } from "react-router-dom";
+import { getVideoById } from "../services/api";
 
 function RecordedVideo() {
+  const { id } = useParams();
+  const [currentVideo, setCurrentVideo] = useState(null);
   const playerRef = useRef(null);
-  const pauseSocketRef = useRef(null);
-  const timeSocketRef = useRef(null);
-
-  const sendPauseMessage = debounce(
-    (paused) => {
-      if (pauseSocketRef.current.readyState === WebSocket.OPEN) {
-        pauseSocketRef.current.send(
-          JSON.stringify({
-            paused: paused,
-          })
-        );
-      }
-    },
-    0,
-    { leading: true, trailing: false, maxWait: 1000 }
-  );
-
-  const sendTimeMessage = debounce(
-    (currentTime) => {
-      if (timeSocketRef.current.readyState === WebSocket.OPEN) {
-        timeSocketRef.current.send(
-          JSON.stringify({
-            startTime: currentTime,
-          })
-        );
-      }
-    },
-    600,
-    { leading: true, trailing: false, maxWait: 1000 }
-  );
 
   useEffect(() => {
-    pauseSocketRef.current = new WebSocket("ws://localhost:20000");
-    timeSocketRef.current = new WebSocket("ws://localhost:30000");
+    getVideoById(id, setCurrentVideo);
+  }, [id]);
 
-    // Add event listeners for play and pause events
-    playerRef.current.subscribeToStateChange((state, prevState) => {
+  useEffect(() => {
+    const pauseSocket = new WebSocket(`ws://localhost:20000/${id}`);
+    const timeSocket = new WebSocket(`ws://localhost:30000/${id}`);
+
+    const sendPauseMessage = debounce(
+      (paused) => {
+        if (pauseSocket.readyState === WebSocket.OPEN) {
+          pauseSocket.send(JSON.stringify({ paused: paused }));
+        }
+      },
+      0,
+      { leading: true, trailing: false, maxWait: 1000 }
+    );
+
+    const sendTimeMessage = debounce(
+      (startTime) => {
+        if (timeSocket.readyState === WebSocket.OPEN) {
+          timeSocket.send(JSON.stringify({ startTime: startTime }));
+        }
+      },
+      600,
+      { leading: true, trailing: false, maxWait: 1000 }
+    );
+
+    const handleStateChange = (state, prevState) => {
       if (state.paused !== prevState.paused) {
         sendPauseMessage(state.paused);
       }
-      if (state.currentTime !== prevState.currentTime) {
-        sendTimeMessage(state.currentTime);
+
+      if (
+        state.seekingTime !== prevState.seekingTime &&
+        state.seekingTime !== 0
+      ) {
+        sendTimeMessage(state.seekingTime);
       }
-    });
-
-    // Clean up the WebSocket connection on component unmount
-    return () => {
-      pauseSocketRef.current.close();
-      timeSocketRef.current.close();
     };
-  }, [playerRef]);
 
-  useEffect(() => {
-    pauseSocketRef.current.addEventListener("message", (event) => {
+    pauseSocket.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
       if (data.hasOwnProperty("paused")) {
         if (data.paused) {
@@ -72,23 +63,29 @@ function RecordedVideo() {
       }
     });
 
-    timeSocketRef.current.addEventListener("message", (event) => {
+    timeSocket.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
       if (data.hasOwnProperty("startTime")) {
         playerRef.current.seek(data.startTime);
       }
     });
-  }, []);
+
+    playerRef.current.subscribeToStateChange(handleStateChange);
+
+    // Clean up the WebSocket connections on component unmount
+    return () => {
+      pauseSocket.close();
+      timeSocket.close();
+    };
+  }, [playerRef]);
 
   return (
     <div className="stream-page">
       <div className="stream" style={{ width: "70%" }}>
         <Player
-          src={testVideo}
+          src={`http://127.0.0.1:8000${currentVideo?.video_file}`}
           ref={playerRef}
-          poster={thumnail}
-          autoplay={true}
-          controls
+          controls={true}
         >
           <BigPlayButton position="center" />
         </Player>
