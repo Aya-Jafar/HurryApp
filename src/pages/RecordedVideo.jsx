@@ -10,6 +10,7 @@ import UserInfo from "../components/UserInfo";
 function RecordedVideo() {
   const { id } = useParams();
   const [currentVideo, setCurrentVideo] = useState(null);
+  const [startTime, setStartTime] = useState(0);
   const playerRef = useRef(null);
 
   useEffect(() => {
@@ -45,10 +46,7 @@ function RecordedVideo() {
         sendPauseMessage(state.paused);
       }
 
-      if (
-        state.seekingTime !== prevState.seekingTime &&
-        state.seekingTime !== 0
-      ) {
+      if (state.seekingTime !== prevState.seekingTime) {
         sendTimeMessage(state.seekingTime);
       }
     };
