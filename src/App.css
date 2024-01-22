@@ -23,7 +23,6 @@ body {
   }
 }
 
-
 .cover img {
   height: 60vh;
   border-radius: 30px;
@@ -207,13 +206,23 @@ p {
 .chat-element div h4 {
   margin: 0;
 }
-.user-info-in-video-page{
+.user-info-in-video-page {
   display: flex;
   align-items: center;
-  gap:2%;
+  gap: 2%;
   margin-top: 2%;
 }
-.user-info-in-video-page img{
+.user-info-in-video-page img {
   width: 50px;
   border-radius: 50%;
+}
+
+.logout-username-section {
+  display: flex;
+  align-items: center;
+  gap:15px
+}
+.logout-username-section img {
+  height: 27px;
+  cursor: pointer;
 }
